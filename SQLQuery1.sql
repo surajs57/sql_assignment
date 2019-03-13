@@ -1,118 +1,112 @@
-USE [master]
+USE [test]
 GO
 
-/****** Object:  Database [test]    Script Date: 13-03-2019 09:32:45 AM ******/
-CREATE DATABASE [test]
- CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'test', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER01\MSSQL\DATA\test.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
- LOG ON 
-( NAME = N'test_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL14.MSSQLSERVER01\MSSQL\DATA\test_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+/****** Object:  Table [dbo].[branch]    Script Date: 13-03-2019 12:11:33 PM ******/
+SET ANSI_NULLS ON
 GO
 
-ALTER DATABASE [test] SET COMPATIBILITY_LEVEL = 140
+SET QUOTED_IDENTIFIER ON
 GO
 
-IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
-begin
-EXEC [test].[dbo].[sp_fulltext_database] @action = 'enable'
-end
+CREATE TABLE [dbo].[branch](
+	[branch_id] [varchar](15) NOT NULL,
+	[branch_name] [varchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[branch_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 GO
 
-ALTER DATABASE [test] SET ANSI_NULL_DEFAULT OFF 
+CREATE TABLE [dbo].[branch_detail](
+	[usn] [varchar](15) NULL,
+	[branch_id] [varchar](15) NULL,
+	[college_id] [varchar](20) NULL
+) ON [PRIMARY]
 GO
 
-ALTER DATABASE [test] SET ANSI_NULLS OFF 
+ALTER TABLE [dbo].[branch_detail]  WITH CHECK ADD FOREIGN KEY([branch_id])
+REFERENCES [dbo].[branch] ([branch_id])
 GO
 
-ALTER DATABASE [test] SET ANSI_PADDING OFF 
+ALTER TABLE [dbo].[branch_detail]  WITH CHECK ADD FOREIGN KEY([college_id])
+REFERENCES [dbo].[college] ([college_id])
 GO
 
-ALTER DATABASE [test] SET ANSI_WARNINGS OFF 
+ALTER TABLE [dbo].[branch_detail]  WITH CHECK ADD FOREIGN KEY([usn])
+REFERENCES [dbo].[student_details] ([usn])
+GO
+CREATE TABLE [dbo].[college](
+	[college_id] [varchar](20) NOT NULL,
+	[college_name] [varchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[college_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+                 
+CREATE TABLE [dbo].[college_details](
+	[usn] [varchar](15) NULL,
+	[college_id] [varchar](20) NULL
+) ON [PRIMARY]
 GO
 
-ALTER DATABASE [test] SET ARITHABORT OFF 
+ALTER TABLE [dbo].[college_details]  WITH CHECK ADD FOREIGN KEY([college_id])
+REFERENCES [dbo].[college] ([college_id])
 GO
 
-ALTER DATABASE [test] SET AUTO_CLOSE OFF 
+ALTER TABLE [dbo].[college_details]  WITH CHECK ADD FOREIGN KEY([usn])
+REFERENCES [dbo].[student_details] ([usn])
+GO
+CREATE TABLE [dbo].[records](
+	[usn] [varchar](15) NULL,
+	[subject_id] [varchar](15) NULL,
+	[attendance] [int] NULL,
+	[Internal_assesment1] [int] NULL,
+	[Internal_assesment2] [int] NULL,
+	[Internal_assesment3] [int] NULL,
+	[final_assesment] [int] NULL
+) ON [PRIMARY]
 GO
 
-ALTER DATABASE [test] SET AUTO_SHRINK OFF 
+ALTER TABLE [dbo].[records]  WITH CHECK ADD FOREIGN KEY([subject_id])
+REFERENCES [dbo].[subjects] ([subject_id])
 GO
 
-ALTER DATABASE [test] SET AUTO_UPDATE_STATISTICS ON 
+ALTER TABLE [dbo].[records]  WITH CHECK ADD FOREIGN KEY([usn])
+REFERENCES [dbo].[student_details] ([usn])
+GO
+CREATE TABLE [dbo].[student_details](
+	[usn] [varchar](15) NOT NULL,
+	[first_name] [varchar](10) NULL,
+	[last_name] [varchar](10) NULL,
+	[batch] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[usn] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[subject_details](
+	[branch_id] [varchar](15) NULL,
+	[subject_id] [varchar](15) NULL
+) ON [PRIMARY]
 GO
 
-ALTER DATABASE [test] SET CURSOR_CLOSE_ON_COMMIT OFF 
+ALTER TABLE [dbo].[subject_details]  WITH CHECK ADD FOREIGN KEY([branch_id])
+REFERENCES [dbo].[branch] ([branch_id])
 GO
 
-ALTER DATABASE [test] SET CURSOR_DEFAULT  GLOBAL 
+ALTER TABLE [dbo].[subject_details]  WITH CHECK ADD FOREIGN KEY([subject_id])
+REFERENCES [dbo].[subjects] ([subject_id])
 GO
-
-ALTER DATABASE [test] SET CONCAT_NULL_YIELDS_NULL OFF 
+CREATE TABLE [dbo].[subjects](
+	[subject_id] [varchar](15) NOT NULL,
+	[subject_name] [varchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[subject_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
 GO
-
-ALTER DATABASE [test] SET NUMERIC_ROUNDABORT OFF 
-GO
-
-ALTER DATABASE [test] SET QUOTED_IDENTIFIER OFF 
-GO
-
-ALTER DATABASE [test] SET RECURSIVE_TRIGGERS OFF 
-GO
-
-ALTER DATABASE [test] SET  DISABLE_BROKER 
-GO
-
-ALTER DATABASE [test] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
-GO
-
-ALTER DATABASE [test] SET DATE_CORRELATION_OPTIMIZATION OFF 
-GO
-
-ALTER DATABASE [test] SET TRUSTWORTHY OFF 
-GO
-
-ALTER DATABASE [test] SET ALLOW_SNAPSHOT_ISOLATION OFF 
-GO
-
-ALTER DATABASE [test] SET PARAMETERIZATION SIMPLE 
-GO
-
-ALTER DATABASE [test] SET READ_COMMITTED_SNAPSHOT OFF 
-GO
-
-ALTER DATABASE [test] SET HONOR_BROKER_PRIORITY OFF 
-GO
-
-ALTER DATABASE [test] SET RECOVERY FULL 
-GO
-
-ALTER DATABASE [test] SET  MULTI_USER 
-GO
-
-ALTER DATABASE [test] SET PAGE_VERIFY CHECKSUM  
-GO
-
-ALTER DATABASE [test] SET DB_CHAINING OFF 
-GO
-
-ALTER DATABASE [test] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
-GO
-
-ALTER DATABASE [test] SET TARGET_RECOVERY_TIME = 60 SECONDS 
-GO
-
-ALTER DATABASE [test] SET DELAYED_DURABILITY = DISABLED 
-GO
-
-ALTER DATABASE [test] SET QUERY_STORE = OFF
-GO
-
-ALTER DATABASE [test] SET  READ_WRITE 
-GO
-
-create table branch_detail(usn varchar(15), branch_id varchar(15), college_id varchar(20),
-foreign key(usn) references student_details(usn),
-foreign key(branch_id) references branch(branch_id),
-foreign key(college_id) references college(college_id));
